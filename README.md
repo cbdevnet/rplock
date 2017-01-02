@@ -19,11 +19,12 @@ temporarily inaccessible.
 
 Input from these keys can then be used to enter an unlock phrase, confirmed by
 pressing enter. The screens are unlocked as soon as the same phrase is entered again
-and confirmed by pressing enter. To just blank the screens for a short time, hit enter
-twice.
+and confirmed by pressing enter. 
+
+To just blank the screens for a short time, hit enter twice.
 
 The `rplock unlock` command replaces the `top` keymap again, with your original one
-and restores the previously saved layout. 
+and restores the previously saved screen layout.
 
 ## Installation
 
@@ -32,7 +33,7 @@ Install `rplock` by running `make install` as root.
 Add it to your ratpoison bindings and make sure it is executed from a known path, eg.
 by running `cd` before starting ratpoison.
 
-# Emergency unlocking
+## Emergency unlocking
 
 If you run into problems unlocking, change to another TTY by pressing Ctrl-Alt-F<1-6>
 and log in. Run `export DISPLAY=:0` to set the target X server and run the `rplock unlock`
