@@ -13,21 +13,26 @@ Press some magic keys to restore everything to the way it was before
 For locking, `rplock` first blanks all screen by going fullscreen and selecting
 an empty window. Your layout is saved in a file called `locked_layout`.
 
-The `top` keymap is then replaced with a new one, replacing your command key with
-something else and making your bindings temporarily inaccessible.
+The `top` keymap is then replaced with a new one, redirecting all alphanumeric keys
+to the script for entering an unlock phrase, thereby making your normal bindings 
+temporarily inaccessible.
+
+Input from these keys can then be used to enter an unlock phrase, confirmed by
+pressing enter. The screens are unlocked as soon as the same phrase is entered again
+and confirmed by pressing enter. To just blank the screens for a short time, hit enter
+twice.
 
 The `rplock unlock` command replaces the `top` keymap again, with your original one
-and restores the previously saved layout. It should be called from within the `locked`
-keymap, triggered by some kind of secret unlock combination.
+and restores the previously saved layout. 
 
 ## Installation
 
-Set up the keys you want to use for unlocking in the appropriate lines of the `rplock`
-script.
+Install `rplock` by running `make install` as root.
 
-Copy the `rplock` script to somewhere in your path (eg. `/usr/local/bin`).
 Add it to your ratpoison bindings and make sure it is executed from a known path, eg.
 by running `cd` before starting ratpoison.
+
+# Emergency unlocking
 
 If you run into problems unlocking, change to another TTY by pressing Ctrl-Alt-F<1-6>
 and log in. Run `export DISPLAY=:0` to set the target X server and run the `rplock unlock`

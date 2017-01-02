@@ -20,6 +20,9 @@
 #
 #	0. You just DO WHAT THE FUCK YOU WANT TO.
 
+LAYOUT=locked_layout
+LOCKPHRASE=rp_lockphrase
+
 rp(){
 	ratpoison -c "$1"
 }
@@ -27,7 +30,7 @@ rp(){
 hide(){
 	printf "Storing current layout to %s\n" "$(pwd)"
 	screens=$(ratpoison -c "sdump" | tr -cd , | wc -c)
-	rp sfdump > locked_layout
+	rp sfdump > "$LAYOUT"
 	# For each screen
 	for screen in $(seq 0 $screens); do
 		# Lock
@@ -38,29 +41,53 @@ hide(){
 }
 
 unhide(){
-	rp "sfrestore $(<locked_layout)"
-	rm locked_layout
+	rp "sfrestore $(<"$LAYOUT")"
+	rm "$LAYOUT"
 }
 
 lock(){
-	rp 'newkmap locktop'
 	rp 'newkmap locked'
-	# Configure your unlock sequence here
-	rp 'definekey locktop C-space readkey locked'
-	rp 'definekey locked space exec rplock unlock'
-	rp 'set topkmap locktop'
+	if [ "$?" == "0" ]; then
+		# Set up lock keymap
+		for char in a b c d e f g h i j k l m n o p q r s t u v w x y z 0 1 2 3 4 5 6 7 8 9; do
+			rp "definekey locked $char exec rplock press $char"
+		done
+		rp 'definekey locked Return exec rplock check'
+	fi
+	rp 'set topkmap locked'
 }
 
 unlock(){
 	rp 'set topkmap top'
-	rp 'delkmap locktop'
-	rp 'delkmap locked'
 }
 
-if [ "$1" == "unlock" ]; then
-	unlock
-	unhide
-else
-	hide
-	lock
-fi
+password_matches(){
+	phrase=$(cat "$LOCKPHRASE" | head -n 1)
+	lines=$(cat "$LOCKPHRASE" | wc -l)
+	uniqs=$(cat "$LOCKPHRASE" | uniq | wc -l)
+	if [ "$lines" -ge "2" ]; then
+		printf "%s\n" "$phrase" > "$LOCKPHRASE"
+		if [ "$uniqs" == "1" ]; then
+			rm "$LOCKPHRASE"
+			return 0
+		fi
+		rp 'echo No.'
+	fi
+	return 255
+}
+
+case "$1" in
+	"press")
+		printf "%s" "$2" >> "$LOCKPHRASE";;
+	"check")
+		printf "\n" >> "$LOCKPHRASE"
+		if password_matches; then
+			$0 unlock
+		fi;;
+	"unlock")
+		unlock
+		unhide;;
+	*)
+		hide
+		lock;;
+esac
