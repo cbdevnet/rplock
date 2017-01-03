@@ -54,4 +54,6 @@ Some other measures you should take
 
 * Always run `xinit || logout` (eg. by setting it as an alias) if you start your
 X server manually. This works because forcibly quitting the X server makes it return nonzero.
+* Disable the [Magic SysRq](http://tldp.org/HOWTO/Remote-Serial-Console-HOWTO/security-sysrq.html) 
+key combinations
 
